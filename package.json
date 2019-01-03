@@ -1,0 +1,16 @@
+{
+   "name": "backend",
+   "version": "0.0.1",
+   "description": "Awesome project developed with Vesper framework.",
+   "devDependencies": {
+      "ts-node": "^5.0.1",
+      "typescript": "^2.7.2"
+   },
+   "dependencies": {
+      "vesper": "0.1.9",
+      "sqlite3": "^3.1.10"
+   },
+   "scripts": {
+      "start": "ts-node src/index.ts"
+   }
+}
