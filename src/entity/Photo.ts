@@ -1,11 +1,11 @@
-import {Entity, PrimaryGeneratedColumn, ManyToOne, Column} from "typeorm";
+import {Entity, ObjectID, ObjectIdColumn, ManyToOne, Column} from "typeorm";
 import {User} from "./User";
 
 @Entity()
 export class Photo {
 
-    @PrimaryGeneratedColumn()
-    id: number;
+    @ObjectIdColumn()
+    id: ObjectID;
 
     @Column()
     filename: string;

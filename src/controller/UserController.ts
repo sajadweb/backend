@@ -1,13 +1,15 @@
-import {Controller, Mutation, Query} from "vesper";
-import {EntityManager, FindManyOptions} from "typeorm";
-import {UsersArgs} from "../args/UsersArgs";
-import {UserSaveArgs} from "../args/UserSaveArgs";
-import {User} from "../entity/User";
+import { Controller, Mutation, Query,ArgsValidator, Authorized } from "vesper";
+import { EntityManager, FindManyOptions } from "typeorm";
+import { UsersArgs, UserSaveArgs, UserSignInArgs, UserVerifyArgs } from "../args/UsersArgs";
+import { User } from "../entity/User";
+import { UserArgsValidator } from "../validator/UserArgsValidator";
+import { CurrentUser } from "../model/CurrentUser";
 
 @Controller()
 export class UserController {
 
-    constructor(private entityManager: EntityManager) {
+    constructor(private entityManager: EntityManager,private currentUser?: CurrentUser) {
+        console.log('UserController',currentUser);
     }
 
     @Query()
@@ -23,23 +25,67 @@ export class UserController {
     }
 
     @Query()
-    user({ id }: { id: number }): Promise<User> {
+    @Authorized(["User","Admin"])
+    user({ id }: { id: string }): Promise<User> {
         return this.entityManager.findOne(User, id);
     }
 
     @Mutation()
-    async userSave(args: UserSaveArgs): Promise<User> {
-        const user = args.id ? await this.entityManager.findOne(User, args.id) : new User();
-        user.firstName = args.firstName;
-        user.lastName = args.lastName;
-        return this.entityManager.save(user);
+    async userSignIn(args: UserSignInArgs): Promise<boolean> {
+        try {
+            //Check mobile has exists
+            //send verify code
+            //TODO send sms
+            //return true
+            return true;
+        } catch (error) {
+            throw new Error(error);
+        }
     }
 
     @Mutation()
-    async userDelete({ id }: { id: number }): Promise<boolean> {
-        const user = await this.entityManager.findOne(User, id);
-        await this.entityManager.remove(user);
-        return true;
+    async userVerify(args: UserVerifyArgs): Promise<User> {
+        try {
+            //Check mobile and code has exists
+            const myUser = await this.entityManager.findOne(User, { mobile: args.mobile });
+            if (myUser != undefined) {
+                throw new Error("شماره موبایل تکراری می باشد");
+            }
+            //jwt code
+
+            //return User
+            return myUser;
+        } catch (error) {
+            throw new Error(error);
+        }
+    }
+
+    @Mutation()
+    @ArgsValidator(UserArgsValidator)
+    async userSignUp(args: UserSaveArgs): Promise<boolean> {
+        try {
+            //Check mobile has unique
+            const myUser = await this.entityManager.findOne(User, { mobile: args.mobile })
+            if (myUser != undefined) {
+                throw new Error("شماره موبایل تکراری می باشد");
+            }
+            //save user 
+            const user = new User();
+            user.firstName = args.firstName;
+            user.lastName = args.lastName;
+            user.mobile = args.mobile;
+            const save = await this.entityManager.save(user);
+            if (save === null) {
+                throw new Error("مشکلی در ثبت وجود دارد");
+            }
+            //send verify code
+            //TODO send sms
+            //return true
+            return true;
+        } catch (error) {
+            throw new Error(error);
+        }
+
     }
 
 }

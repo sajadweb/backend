@@ -1,6 +1,6 @@
 type Photo {
-    id: Int
+    id: ID
     filename: String
-    userId: Int
+    userId: ID
     user: User
 }

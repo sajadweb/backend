@@ -3,14 +3,16 @@
    "version": "0.0.1",
    "description": "Awesome project developed with Vesper framework.",
    "devDependencies": {
+      "@trongnd/ts-nodemon": "^1.0.3",
       "ts-node": "^5.0.1",
       "typescript": "^2.7.2"
    },
    "dependencies": {
-      "vesper": "0.1.9",
-      "sqlite3": "^3.1.10"
+      "mongodb": "^3.1.10",
+      "vesper": "0.1.9"
    },
    "scripts": {
+      "nodemon": "ts-nodemon --exec 'yarn start'",
       "start": "ts-node src/index.ts"
    }
 }
