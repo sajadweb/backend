@@ -18,8 +18,4 @@ export class User {
 
     @OneToMany(() => Photo, photo => photo.user)
     photos: Photo[];
-    /**
-     * Indicates, if photo was added by currently authorized user.
-     */
-    addedByCurrentUser: boolean;
 }

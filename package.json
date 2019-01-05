@@ -1,18 +1,24 @@
 {
-   "name": "backend",
-   "version": "0.0.1",
-   "description": "Awesome project developed with Vesper framework.",
-   "devDependencies": {
-      "@trongnd/ts-nodemon": "^1.0.3",
-      "ts-node": "^5.0.1",
-      "typescript": "^2.7.2"
-   },
-   "dependencies": {
-      "mongodb": "^3.1.10",
-      "vesper": "0.1.9"
-   },
-   "scripts": {
-      "nodemon": "ts-nodemon --exec 'yarn start'",
-      "start": "ts-node src/index.ts"
-   }
+  "name": "backend",
+  "version": "0.0.1",
+  "description": "Awesome project developed with Vesper framework.",
+  "devDependencies": {
+    "@trongnd/ts-nodemon": "^1.0.3",
+    "@types/dotenv": "^6.1.0",
+    "@types/request": "^2.48.1",
+    "@types/request-promise": "^4.1.42",
+    "ts-node": "^5.0.1",
+    "typescript": "^2.7.2"
+  },
+  "dependencies": {
+    "dotenv": "^6.2.0",
+    "mongodb": "^3.1.10",
+    "request": "^2.88.0",
+    "request-promise": "^4.2.2",
+    "vesper": "0.1.9"
+  },
+  "scripts": {
+    "nodemon": "ts-nodemon --exec 'yarn start'",
+    "start": "ts-node src/index.ts"
+  }
 }
