@@ -1,0 +1,25 @@
+{
+   "type": "mongodb",
+   "host": "*.mlab.com",
+   "port": 59255,
+   "username": "",
+   "password": "",
+   "database": "",
+   "useNewUrlParser": true,
+   "synchronize": true,
+   "logging": false,
+   "entities": [
+      "src/modules/**/entity/**/*.ts"
+   ],
+   "migrations": [
+      "src/modules/**/migration/**/*.ts"
+   ],
+   "subscribers": [
+      "src/modules/**/subscriber/**/*.ts"
+   ],
+   "cli": {
+      "entitiesDir": "src/entity",
+      "migrationsDir": "src/migration",
+      "subscribersDir": "src/subscriber"
+   }
+}

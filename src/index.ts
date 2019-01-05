@@ -50,6 +50,14 @@ buildVesperSchema({
 
     const app = express();
     app.use(cors());
+    app.get("/bank",async (rq, rs, nx) => {
+        const entityManager = getManager();
+        const user = await entityManager.findOneOrFail(User, { mobile: "09332369461" });
+        if (user) {
+            rs.send(user);
+        }
+        rs.send("html");
+    });
     app.use("/graphql", bodyParser.json(), vesper(schema));
     app.use("/graphiql", graphiqlExpress({ endpointURL: "/graphql" }));
     app.listen(process.env.PORT, (error: any) => {
