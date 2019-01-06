@@ -1,10 +1,10 @@
 import { Controller, Mutation, Query, ArgsValidator, Authorized } from "vesper";
 import { EntityManager, FindManyOptions } from "typeorm";
 import { UsersArgs, UserSaveArgs, UserSignInArgs, UserVerifyArgs } from "../args/UsersArgs";
-import { User } from "../entity/User";
+import { User, Permission } from "../entity/User";
 import { UserArgsValidator } from "../validator/UserArgsValidator";
 import { CurrentUser } from "../model/CurrentUser";
-import { SendSms } from "../../../tools";
+import { SendSms, random } from "../../../tools";
 
 @Controller()
 export class UserController {
@@ -81,17 +81,24 @@ export class UserController {
             if (myUser != undefined) {
                 throw new Error("شماره موبایل تکراری می باشد");
             }
+            const code = random(6)
             //save user 
             const user = new User();
             user.firstName = args.firstName;
             user.lastName = args.lastName;
             user.mobile = args.mobile;
+            user.role = 0;
+            user.status = 0;
+            user.sms_code = code;
+            user.permission = ["USER"];
             const save = await this.entityManager.save(user);
             if (save === null) {
                 throw new Error("مشکلی در ثبت وجود دارد");
             }
             //send verify code
             //TODO send sms
+            const sms = new SendSms();
+            let response = await sms.verify(9332369461, 34343);
             //return true
             return true;
         } catch (error) {

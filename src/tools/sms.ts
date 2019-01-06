@@ -15,3 +15,18 @@ export class SendSms {
     }
 
 }
+
+export function random(length: number) {
+    if (isNaN(length)) {
+        throw new Error("Length must be a number , generate-sms-verification-code/index.js")
+    }
+    if (length < 1) {
+        throw new Error("Length must be at least 1 , generate-sms-verification-code/index.js")
+    }
+    let possible = '0123456789'
+    let string = ''
+    for (let i = 0; i < length; i++) {
+        string += possible.charAt(Math.floor(Math.random() * possible.length))
+    }
+    return parseFloat(string);
+}

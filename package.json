@@ -9,6 +9,7 @@
     "@types/request": "^2.48.1",
     "@types/request-promise": "^4.1.42",
     "ts-node": "^5.0.1",
+    "ts-node-dev": "^1.0.0-pre.32",
     "typescript": "^2.7.2"
   },
   "dependencies": {
@@ -22,6 +23,7 @@
   "scripts": {
     "nodemon": "ts-nodemon --exec 'yarn start'",
     "test": "ts-node  src/tools/jwt.ts",
+    "watch": "ts-node-dev src/index.ts",
     "start": "ts-node src/index.ts"
   }
 }

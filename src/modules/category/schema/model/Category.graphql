@@ -1,0 +1,6 @@
+
+type Category {
+    id: ID
+    title: String
+    sub_category: [Category]
+}

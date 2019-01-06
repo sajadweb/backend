@@ -1,7 +1,15 @@
+
+enum Permission {
+  ADMIN
+  USER
+  PROVIDER
+}
+
 type User {
     id: ID
     mobile: String
     firstName: String
     lastName: String
-    photos: [Photo]
+    role: Int
+    permission: [Permission]
 }
