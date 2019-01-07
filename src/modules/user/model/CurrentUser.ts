@@ -2,10 +2,20 @@ import { ObjectID } from "typeorm";
 
 export class CurrentUser {
     id: ObjectID;
-    name: string;
+    firstName: string;
+    lastName: string;
+    mobile: string;
+    permission: [string];
 
-    constructor(id: ObjectID, name: string) {
+    constructor(id: ObjectID,
+        firstName: string,
+        lastName: string,
+        mobile: string,
+        permission: [string]) {
         this.id = id;
-        this.name = name;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.mobile = mobile;
+        this.permission = permission;
     }
 }

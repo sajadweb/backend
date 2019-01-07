@@ -13,11 +13,11 @@ export class UserController {
     }
 
     @Query()
-    @Authorized(["User", "Profile"])
+    @Authorized(["User"])
     async me(): Promise<User> {
         try {
-            const sms = new SendSms();
-            let code = await sms.verify(9332369461, 34343);
+            // const sms = new SendSms();
+            // let code = await sms.verify(9332369461, 34343);
             return this.entityManager.findOne(User, this.currentUser.id);
         } catch (error) {
             throw new Error(error);

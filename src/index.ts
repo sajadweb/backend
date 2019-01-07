@@ -8,6 +8,7 @@ import { getManager } from "typeorm";
 import { CurrentUser } from "./modules/user/model/CurrentUser";
 import UserModule from "./modules/user";
 import * as dotenv from 'dotenv';
+import { deCode, enCode } from "./tools";
 dotenv.config();
 
 buildVesperSchema({
@@ -20,37 +21,50 @@ buildVesperSchema({
 
     authorizationChecker: (roles: string[], action) => {
         const currentUser = action.container.get(CurrentUser)
-
+        console.log("currentUser", currentUser)
         if (currentUser.id === undefined) {
             throw new Error("The current user isn't defined")
         }
 
-        // if (roles.length > 0) {
-        //   const hasRole = currentUser.roles.some((role: string) => {
-        //     return roles.includes(role)
-        //   })
-        //   if (!hasRole) {
-        //     throw new Error("The current user doesn't have permissions")
-        //   }
-        // }
+        if (roles.length > 0) {
+            const hasRole = currentUser.permission.some((role: string) => {
+            return roles.includes(role)
+          })
+          if (!hasRole) {
+            throw new Error("The current user doesn't have permissions")
+          }
+        }
     },
     setupContainer: async (container, action) => {
         // trivial implementation, in reality it should be token-based authorization
-        // const request = action.request; // user request, you can get http headers from it
-        const entityManager = getManager();
-        const user = await entityManager.findOneOrFail(User, { mobile: "09332369461" });
-        // console.log('user', user)
-        if (user) {
-            const currentUser = new CurrentUser(user.id, user.firstName + " " + user.lastName);
-            // console.log('users current', currentUser)
-            container.set(CurrentUser, currentUser);
+        const request = action.request; // user request, you can get http headers from it
+        const token = request.header("Authorization");
+        if (token) {
+            const user = deCode(token);
+            if (user !== undefined && typeof user !== "string") {
+                console.log('user', user);
+                const currentUser = new CurrentUser(user["id"],
+                    user["firstName"],
+                    user["lastName"],
+                    user["mobile"],
+                    user["permission"]);
+                container.set(CurrentUser, currentUser);
+            }
         }
+
+        // const entityManager = getManager();
+        // const user = await entityManager.findOneOrFail(User, { mobile: "09332369461" });
+        // if (user) {
+        //     const currentUser = new CurrentUser(user.id, user.firstName + " " + user.lastName);
+        //     container.set(CurrentUser, currentUser);
+        // }
+
     }
 }).then(schema => {
 
     const app = express();
     app.use(cors());
-    app.get("/bank",async (rq, rs, nx) => {
+    app.get("/bank", async (rq, rs, nx) => {
         const entityManager = getManager();
         const user = await entityManager.findOneOrFail(User, { mobile: "09332369461" });
         if (user) {
