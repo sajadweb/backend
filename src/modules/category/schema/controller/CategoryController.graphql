@@ -1,8 +1,8 @@
 type Query {
-    categories(limit: Int, offset: Int): [Category]
-    category(id: ID): Category
+    categories(limit: Int, offset: Offset, parent: String, title: String, sort: Sort ): [Category]
+    allCategories(limit: Int, offset: Offset, parent: String, title: String, sort:  Sort  ): [Category]
 }
 
 type Mutation {
-    newItem(title: String!, parent: ID): Boolean
+    newCategory(title: String!, parent: ID): Boolean
 }

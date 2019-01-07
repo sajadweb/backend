@@ -10,11 +10,6 @@ export class Category {
     title: string;
 
     @Column()
-    parentId: ObjectID;
+    parent: ObjectID;
 
-    @ManyToOne(() => Category, parent => parent.sub_category)
-    parent: Category;
-
-    @OneToMany(() => Category, sub_category => sub_category.parent)
-    sub_category: Category[];
 }

@@ -1,6 +1,18 @@
-
+enum Sort {
+ ASC 
+ DESC
+}
+enum Offset {
+ Five
+ Ten
+ Fifteen
+ Twenty
+ TwentyFive
+ Fifty
+ Hundred
+}
 type Category {
     id: ID
     title: String
-    sub_category: [Category]
+    parent: String
 }
