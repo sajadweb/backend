@@ -1,7 +1,18 @@
-import { Entity, ObjectID, ObjectIdColumn, OneToMany, Column } from "typeorm";
-import { Photo } from "./Photo";
-import { type } from "os";
+import { Entity, ObjectID, ObjectIdColumn, Column, JoinTable } from "typeorm";
+import { Area } from "./Location";
+import { Category } from "../../category/entity/Category";
 export type Permission = "ADMIN" | "USER" | "PROVIDER";
+
+export type Info = {
+    shop_name: string,
+    code: number,
+    registration: string,
+    kind: string,
+    shaba_code: string,
+    postal_code: string,
+    postal_address: string,
+  
+};
 
 
 @Entity()
@@ -16,10 +27,10 @@ export class User {
     @Column()
     lastName: string;
 
-    @Column({default: "0"})
+    @Column({ default: "0" })
     role: number;
 
-    @Column({default: "0"})
+    @Column({ default: "0" })
     status: number;
 
     @Column()
@@ -31,6 +42,12 @@ export class User {
     @Column()
     sms_code: number;
 
-    @OneToMany(() => Photo, photo => photo.user)
-    photos: Photo[];
+    @Column(type => Category)
+    category: Category;
+
+    @Column(type => Area)
+    area: Area;
+
+    @Column()
+    info: [Info]
 }

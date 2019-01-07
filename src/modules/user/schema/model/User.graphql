@@ -4,6 +4,22 @@ enum Permission {
   USER
   PROVIDER
 }
+type Area {
+  id: ID
+  name: String
+  city: City
+}
+
+type City {
+  id: ID
+  name: String
+  province: Province
+}
+
+type Province {
+  id: ID
+  name: String
+}
 
 type User {
     id: ID
@@ -12,4 +28,6 @@ type User {
     lastName: String
     role: Int
     permission: [Permission]
+    category: Category
+    area: Area
 }

@@ -1,10 +1,11 @@
 import { Controller, Mutation, Query, ArgsValidator, Authorized } from "vesper";
-import { EntityManager, FindManyOptions } from "typeorm";
+import { EntityManager, FindManyOptions, ObjectID, ObjectIdColumn } from "typeorm";
 import { UsersArgs, UserSaveArgs, UserSignInArgs, UserVerifyArgs } from "../args/UsersArgs";
 import { User, Permission } from "../entity/User";
 import { UserArgsValidator } from "../validator/UserArgsValidator";
 import { CurrentUser } from "../model/CurrentUser";
 import { SendSms, random } from "../../../tools";
+import { Category } from "../../category/entity/Category";
 
 @Controller()
 export class UserController {
@@ -78,6 +79,12 @@ export class UserController {
         try {
             //Check mobile has unique
             const myUser = await this.entityManager.findOne(User, { mobile: args.mobile })
+            const id = { id: ObjectIdColumn("5c31c59deeab8cb9f82cf1e1") };
+            const category = await this.entityManager.findOne(Category, id)
+            console.log("category", category)
+            if (category === undefined) {
+                throw new Error("شماره موبایل تکراری می باشد");
+            }
             if (myUser != undefined) {
                 throw new Error("شماره موبایل تکراری می باشد");
             }
@@ -90,6 +97,7 @@ export class UserController {
             user.role = 0;
             user.status = 0;
             user.sms_code = code;
+            user.category = category;
             user.permission = ["USER"];
             const save = await this.entityManager.save(user);
             if (save === null) {
@@ -97,8 +105,8 @@ export class UserController {
             }
             //send verify code
             //TODO send sms
-            const sms = new SendSms();
-            let response = await sms.verify(9332369461, 34343);
+            // const sms = new SendSms();
+            // let response = await sms.verify(9332369461, 34343);
             //return true
             return true;
         } catch (error) {

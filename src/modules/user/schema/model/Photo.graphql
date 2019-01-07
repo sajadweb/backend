@@ -1,6 +1,0 @@
-type Photo {
-    id: ID
-    filename: String
-    userId: ID
-    user: User
-}
