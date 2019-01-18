@@ -10,3 +10,12 @@ export function isCode(code: any): boolean {
     }
     return false;
 }
+
+export function isString(str: any): boolean {
+    if (str)
+        if (str !== undefined)
+            if (str.length > 0)
+                return true;
+
+    return false;
+}

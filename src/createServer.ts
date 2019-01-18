@@ -10,7 +10,7 @@ function createServer(context) {
             Mutation,
             Query
         },
-        context
+        context: req => ({ ...req, ...context }),
     });
 }
 

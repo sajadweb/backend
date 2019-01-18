@@ -1,7 +1,8 @@
-import { isMobile, random, SendSms, isCode } from "../tools";
+import { isMobile, random, SendSms, isCode, enCode, isString, hasPermission } from "../tools";
 const Mutation = {
 
-    async  saveUser(parent, args, { models }) {
+    async  saveUser(parent, args, { request, models }, info) {
+        hasPermission(request.user, ["ADMIN"]);
         const User = models.User;
         let user = await User.findById(args.userId);
         user.firstName = args.firstName;
@@ -64,76 +65,136 @@ const Mutation = {
     },
     async  verify(parent, args, { models }, info) {
         //validation mobile and code
+        if (!isMobile(args.mobile) || !isCode(args.code)) {
+            throw Error("موبایل یا کد صحیح نمی باشد");
+        }
         //find mobile , code
+        const User = models.User;
+        let myUser = await User.findOne({ mobile: args.mobile, sms_code: args.code });
+        if (!myUser) {
+            throw Error("موبایل یا کد صحیح نمی باشد");
+        }
         //create token
+        const user = {
+            id: myUser._id,
+            permission: myUser.permission,
+            categories: myUser.categories,
+        };
+        const token = enCode(user);
+        return {
+            data: myUser,
+            token
+        }
         //return user
     },
-    // async  editProvince(parent, args, { models }, info) {
-    //     //find by id
-    //     //edit 
-    //     //return 
-    // },
-    // async  newProvince(parent, args, { models }, info) {
+    async  editProvince(parent, args, { request, models }, info) {
+        hasPermission(request.user, ["ADMIN"]);
+        //validation name
+        if (!isString(args.name)) {
+            throw Error("نام استان صحیح نمی باشد");
+        }
+        //find by id
+        const Province = models.Province;
+        const province = await Province.findById(args.id);
+        if (!province) {
+            throw Error("  استان پیدا نشد");
+        }
+        //save 
+        province.name = args.name;
+        if (province.save) {
+            return province;
+        }
+        throw Error("مشکلی در ثبت وجود امد");
+    },
+    async  newProvince(parent, args, { request, models }, info) {
+        hasPermission(request.user, ["ADMIN"]);
+        //find by name
+        if (!isString(args.name)) {
+            throw Error("نام استان صحیح نمی باشد");
+        }
+        //new model
+        const Province = models.Province;
+        const find = await Province.findOne({ name: args.name });
+        if (find) {
+            throw Error("استان تکراری می باشد");
+        }
+        let province = new Province();
+        // save 
+        province.name = args.name;
+        if (province.save()) {
+            return province;
+        }
+        throw Error("مشکلی در ثبت وجود امد");
+
+    },
+    // async  newCity(parent, args, { request, models }, info) {
+    //       hasPermission(request.user, ["ADMIN"]);
     //      //find by name
     //     //edit 
     //     //return 
     // },
-    // async  newCity(parent, args, { models }, info) {
-    //      //find by name
-    //     //edit 
-    //     //return 
-    // },
-    // async  editCity(parent, args, { models }, info) {
+    // async  editCity(parent, args, { request, models }, info) {
+    //       hasPermission(request.user, ["ADMIN"]);
     //      //find by id
     //     //edit 
     //     //return 
     // },
-    // async  newArea(parent, args, { models }, info) {
+    // async  newArea(parent, args, { request, models }, info) {
+    //       hasPermission(request.user, ["ADMIN"]);
     //      //find by name
     //     //edit 
     //     //return 
     // },
-    // async  editArea(parent, args, { models }, info) {
+    // async  editArea(parent, args, { request, models }, info) {
+    //       hasPermission(request.user, ["ADMIN"]);
     //      //find by id
     //     //edit 
     //     //return 
     // },
-    // async  newCategory(parent, args, { models }, info) {
+    // async  newCategory(parent, args, { request, models }, info) {
+    //       hasPermission(request.user, ["ADMIN"]);
     //      //find by title
     //     //edit 
     //     //return 
     // },
-    // async  editCategory(parent, args, { models }, info) {
+    // async  editCategory(parent, args, { request, models }, info) {
+    //       hasPermission(request.user, ["ADMIN"]);
     //      //find by id
     //     //edit 
     //     //return 
     // },
-    // async  newProduct(parent, args, { models }, info) {
+    // async  newProduct(parent, args, { request, models }, info) {
+    //       hasPermission(request.user, ["ADMIN"]);
     //      //find by id
     //     //edit 
     //     //return 
     // },
-    // async  editProduct(parent, args, { models }, info) {
+    // async  editProduct(parent, args, { request, models }, info) {
+    //       hasPermission(request.user, ["ADMIN"]);
     //      //find by id
     //     //edit 
     //     //return 
     // },
-    // async  newOrder(parent, args, { models }, info) {
+    // async  newOrder(parent, args, { request, models }, info) {
+    //       hasPermission(request.user, ["ADMIN"]);
     //      //find by id
     //     //edit 
     //     //return 
     // },
-    // async  editOrder(parent, args, { models }, info) {
+    // async  editOrder(parent, args, { request, models }, info) {
+    //       hasPermission(request.user, ["ADMIN"]);
     //      //find by id
     //     //edit 
     //     //return 
     // },
-    // async  addPriceInProduct(parent, args, { models }, info) {
-    //      //find by id
-    //     //edit 
-    //     //return 
+    // async  addPriceInProduct(parent, args, { request, models }, info) {
+        //       hasPermission(request.user, ["ADMIN"]);
+        //find by id
+        //edit 
+        //return 
     // },
-    // async  editProfile(parent, args, { models }, info) {
+    // async  editProfile(parent, args,{ request, models }, info) {
+    //       hasPermission(request.user, ["ADMIN"]);
     //      //find by id
     //     //edit 
     //     //return 

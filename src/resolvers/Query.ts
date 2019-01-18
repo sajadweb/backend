@@ -1,11 +1,17 @@
+import { hasPermission } from "../tools";
+
 const Query = {
+    async me(parent, args, { request }, info) {
+        hasPermission(request.user, ["ADMIN", "SHOP", "PROVIDER"])
+        return request.user;
+    },
     async users(parent, args, { models }, info) {
         const User = models.User;
         const user = await User.find().populate({
             path: "categories",
             populate: { path: 'parent' }
         }).exec();
-        console.log("user",user);
+        console.log("user", user);
         return user;
     },
     async categories(parent, args, { models }, info) {
@@ -40,12 +46,12 @@ const Query = {
     async products(parent, args, { models }, info) {
         const Product = models.Product;
         const products = await Product.find()
-        .populate("categories")
-        .populate({
-           path:"prices",
-           populate: { path: "provider"}
-        })
-        .exec();
+            .populate("categories")
+            .populate({
+                path: "prices",
+                populate: { path: "provider" }
+            })
+            .exec();
         return products;
     },
 
@@ -58,14 +64,14 @@ const Query = {
     async orders(parent, args, { models }, info) {
         const Order = models.Order;
         const orders = await Order.find()
-        .populate("shop")
-        .populate({
-           path: "details",
-           populate: { path: "provider"}
-        })
-        .exec();
+            .populate("shop")
+            .populate({
+                path: "details",
+                populate: { path: "provider" }
+            })
+            .exec();
         return orders;
-    }, 
+    },
 
     // publishedPosts(parent, args, context, info) {
     //     return context.db.query.posts({ where: { published: true } }, info)
