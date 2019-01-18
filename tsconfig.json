@@ -1,17 +1,14 @@
 {
-   "compilerOptions": {
-      "outDir": "./dist",
-      "lib": [
-         "es5",
-         "es6",
-         "es7",
-         "esnext"
-      ],
-      "target": "es5",
-      "module": "commonjs",
-      "moduleResolution": "node",
-      "emitDecoratorMetadata": true,
-      "experimentalDecorators": true,
-      "sourceMap": true
-   }
+  "compilerOptions": {
+    "target": "es6",
+    "declaration": false,
+     "module": "commonjs",
+     "moduleResolution": "node",
+    "lib": [
+      "es2016",
+      "esnext.asynciterable"
+    ],
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true
+  }
 }

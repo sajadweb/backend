@@ -1,8 +1,0 @@
-type Query {
-    categories(limit: Int, offset: Int): [Category]
-    category(id: ID): Category
-}
-
-type Mutation {
-    newItem(title: String!, parent: ID): Boolean
-}

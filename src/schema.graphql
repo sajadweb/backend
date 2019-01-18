@@ -1,0 +1,37 @@
+type Query {
+  users: [User]
+  categories: [Category]
+
+  publishedPosts: [Post!]!
+  post(postId: ID!): Post
+  postsByUser(userId: ID!): [Post!]!
+}
+
+type Mutation {
+  saveUser(userId: ID,firstName: String,lastName:String): User
+  createDraft(title: String!, userId: ID!): Post
+  publish(postId: ID!): Post
+}
+
+type User { 
+  id: ID! 
+  mobile: String 
+  firstName: String! 
+  lastName: String! 
+  permission: [String] 
+  categories: [Category] 
+  
+} 
+
+type Post { 
+  id: ID!  
+  title: String! 
+  published: Boolean!
+  author: User 
+}
+
+type Category { 
+  id: ID!  
+  title: String!
+  parent: Category
+} 
