@@ -1,18 +1,39 @@
 type Query {
   users: [User]
   categories: [Category]
-
-  publishedPosts: [Post!]!
-  post(postId: ID!): Post
-  postsByUser(userId: ID!): [Post!]!
+  provinces: [Province]
+  cities: [City]
+  areas: [Area]
+  products: [Product]
+  suborders: [SubOrder]
+  orders: [Order]
 }
 
 type Mutation {
   saveUser(userId: ID,firstName: String,lastName:String): User
-  createDraft(title: String!, userId: ID!): Post
-  publish(postId: ID!): Post
+  signIn(mobile: String!): Boolean!
+  signUp(firstName: String,lastName: String,mobile: String!):Boolean!
+  verify(mobile: String!,code: String!): Verify!
+  editProvince(id: ID!,name: String!): Province!
+  newProvince(name: String!): Province!
+  editCity(id: ID,name: String, Province: ID!): City!
+  newCity(name: String!,province: ID): City!
+  editArea(id: ID,name: String,province: ID!,city: ID!): Area
+  newArea(name: String!,province: ID,city: ID): Area 
+  editCategory(title: String,parent: ID): Category
+  newCategory(title: String,parent: ID): Category
+  newProduct(name: String,permission: String, publish: Boolean, photo: [String],description: String, categories: [ID]): Product
+  editProduct(name: String,permission: String, publish: Boolean, photo: [String],description: String, categories: [ID]): Product
+  newOrder(shop: ID,price_all: String,discount: String): Order
+  editOrder(shop: ID,price_all: String,discount: String): Order
+  addPriceInProduct(price: String,product: ID): Boolean
+  editProfile(item: String): Boolean
 }
 
+type Verify{
+  token: String
+  data: User
+}
 type User { 
   id: ID! 
   mobile: String 
@@ -23,15 +44,60 @@ type User {
   
 } 
 
-type Post { 
-  id: ID!  
-  title: String! 
-  published: Boolean!
-  author: User 
-}
-
 type Category { 
   id: ID!  
   title: String!
   parent: Category
 } 
+
+type Province {
+  id: ID!  
+  name: String
+}
+
+type City {
+  id: ID!  
+  province: Province
+  name: String
+}
+
+type Area {
+  id: ID!  
+  city: City
+  province: Province
+  name: String
+}
+
+type Price {
+  id: ID!  
+  provider: User
+  price: String
+}
+
+type Product {
+  id: ID!  
+  name: String
+  commission: String
+  publish: Boolean
+  photo: String
+  description: String
+  categories: [Category]
+  prices: [Price]
+}
+   
+
+type SubOrder{
+  id: ID!  
+    items: String
+    provider: User
+}
+
+
+type Order {
+  id: ID!  
+    shop: User
+    price_all: String
+    discount: String
+    status: Boolean
+    details: SubOrder
+}

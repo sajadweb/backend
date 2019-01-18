@@ -1,7 +1,6 @@
 
 import * as mongoose from "mongoose";
-import Category from "./Category";
-import User from "./User";
+import {models} from "./Models";
 
 const startDB = () => {
     var db_options = {
@@ -24,10 +23,7 @@ const startDB = () => {
 
 
 
-const models = {
-    User,
-    Category,
-}
+
 
 export {
     startDB,
