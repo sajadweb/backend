@@ -1,4 +1,38 @@
-import { prop, Typegoose, arrayProp, Ref } from 'typegoose';
+import { prop, Typegoose, arrayProp, Ref } from "typegoose";
+import * as mongoose from "mongoose";
+
+class Province extends Typegoose {
+
+    @prop()
+    name: string;
+}
+
+class City extends Typegoose {
+
+    @prop({ ref: Province })
+    province?: Ref<Province>;
+
+    @prop()
+    name: string;
+}
+
+
+
+class Area extends Typegoose {
+    @prop({ ref: City })
+    city?: Ref<City>;
+
+    @prop({ ref: Province })
+    province: Ref<Province>;
+
+    @prop()
+    name: string;
+}
+
+class TypeEstate extends Typegoose {
+    @prop()
+    title: string;
+}
 
 class Category extends Typegoose {
 
@@ -33,36 +67,40 @@ class User extends Typegoose {
 
     @arrayProp({ itemsRef: Category })
     categories?: Ref<Category>[];
-}
 
-
-class Province extends Typegoose {
 
     @prop()
-    name: string;
-}
-
-class City extends Typegoose {
-
-    @prop({ ref: Province })
-    province?: Ref<Province>;
+    shaba: string;
 
     @prop()
-    name: string;
-}
+    shop_name: string;
 
+    @prop()
+    mali: string;
 
+    @prop()
+    sabt: string;
 
-class Area extends Typegoose {
-    @prop({ ref: City })
-    city?: Ref<City>;
+    @prop({ ref: TypeEstate })
+    type_estate: Ref<TypeEstate>;
+
+    @prop()
+    address: string;
 
     @prop({ ref: Province })
     province: Ref<Province>;
 
+    @prop({ ref: City })
+    city: Ref<City>;
+
+    @prop({ ref: Area })
+    area: Ref<Area>;
+
     @prop()
-    name: string;
+    postal_code: string;
 }
+
+
 
 class Price extends Typegoose {
     @prop({ ref: User })
@@ -105,8 +143,8 @@ class SubOrder extends Typegoose {
     @prop()
     items: string;
 
-    //@prop({ ref: SubOrder })
-    //Order?: Ref<SubOrder>;
+    // @prop({ ref: SubOrder })
+    // order?: Ref<SubOrder>;
 
     @prop({ ref: User })
     provider?: Ref<User>;
@@ -124,7 +162,7 @@ class Order extends Typegoose {
     discount: string;
 
     @prop()
-    status:Boolean ;
+    status: Boolean;
 
     @prop({ ref: SubOrder })
     details?: Ref<SubOrder>;
@@ -132,6 +170,10 @@ class Order extends Typegoose {
 }
 
 const UserModel = new User().getModelForClass(User);
+const TypeEstateModel = new TypeEstate()
+    .getModelForClass(TypeEstate, {
+        schemaOptions: { collection: "type_estates" }
+    });
 const CategoryModel = new Category().getModelForClass(Category);
 const AreaModel = new Area().getModelForClass(Area);
 const ProvinceModel = new Province().getModelForClass(Province);
@@ -141,16 +183,16 @@ const PriceModel = new Price().getModelForClass(Price);
 const OrderModel = new Order().getModelForClass(Order);
 const SubOrderModel = new SubOrder().getModelForClass(SubOrder);
 
-
 export const models = {
     User: UserModel,
     Category: CategoryModel,
     City: CityModel,
     Area: AreaModel,
     Province: ProvinceModel,
-    Product:ProductModel,
-    Price:PriceModel,
-    Order:OrderModel,
-    SubOrder:SubOrderModel
+    Product: ProductModel,
+    Price: PriceModel,
+    Order: OrderModel,
+    SubOrder: SubOrderModel,
+    TypeEstate: TypeEstateModel
 
-}
+};

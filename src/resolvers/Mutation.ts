@@ -1,16 +1,18 @@
-import { isMobile, random, SendSms, isCode, enCode, isString, hasPermission } from "../tools";
+import { isMobile, random, SendSms, isCode, enCode, isString, hasPermission, checkPermission } from "../tools";
+// tslint:disable:typedef
+// tslint:disable
 const Mutation = {
 
     async  saveUser(parent, args, { request, models }, info) {
         hasPermission(request.user, ["ADMIN"]);
         const User = models.User;
-        let user = await User.findById(args.userId);
+        let user = await User.findById(request.userId);
         user.firstName = args.firstName;
         await user.save();
         console.log(user);
         return user;
     },
-    async  signIn(parent, args, { models }) {
+    async  userSignIn(parent, args, { models }) {
         //validation mobile
         if (!isMobile(args.mobile)) {
             throw Error("موبایل صحیح نمی باشد");
@@ -21,21 +23,21 @@ const Mutation = {
         if (!user) {
             throw Error("موبایل صحیح نمی باشد");
         }
-        //send code
+        // send code
         const code = random(6);
-        //save code 
+        // save code
         user.sms_code = code;
         if (user.save()) {
             // const sms = new SendSms();
             // const response = await sms.verify(args.mobile , code);
-            return true
+            return true;
         } else {
             throw Error("موبایل صحیح نمی باشد");
         }
 
     },
-    async  signUp(parent, args, { models }, info) {
-        //validation mobile
+    async  userSignUp(parent, args, { models }, info) {
+        // validation mobile
         if (!isMobile(args.mobile)) {
             throw Error("موبایل صحیح نمی باشد");
         }
@@ -63,7 +65,7 @@ const Mutation = {
             throw Error("موبایل صحیح نمی باشد");
         }
     },
-    async  verify(parent, args, { models }, info) {
+    async  userVerify(parent, args, { models }, info) {
         //validation mobile and code
         if (!isMobile(args.mobile) || !isCode(args.code)) {
             throw Error("موبایل یا کد صحیح نمی باشد");
@@ -83,7 +85,7 @@ const Mutation = {
         const token = enCode(user);
         return {
             data: myUser,
-            token
+            token,
         }
         //return user
     },
@@ -119,7 +121,7 @@ const Mutation = {
             throw Error("استان تکراری می باشد");
         }
         let province = new Province();
-        // save 
+        // save
         province.name = args.name;
         if (province.save()) {
             return province;
@@ -187,17 +189,81 @@ const Mutation = {
     //     //edit 
     //     //return 
     // },
-    // async  addPriceInProduct(parent, args, { request, models }, info) {
-        //       hasPermission(request.user, ["ADMIN"]);
-        //find by id
-        //edit 
-        //return 
-    // },
-    // async  editProfile(parent, args,{ request, models }, info) {
-    //       hasPermission(request.user, ["ADMIN"]);
-    //      //find by id
-    //     //edit 
-    //     //return 
-    // }
-}
+    async  addPriceInProduct(parent, args, { request, models }, info) {
+        hasPermission(request.user, ["PROVIDER", "ADMIN"]);
+        const ADMIN = checkPermission(request.user, ["ADMIN"]);
+        const Product = models.Product;
+        const Prices = models.Prices;
+        const find = await Product.findById(args.product);
+        if (find) {
+            throw Error("محصول مورد نظر یافت نشد");
+        }
+        const PROVIDER = checkPermission(request.user, ["PROVIDER"]);
+        const $type = (ADMIN && "ADMIN") || (PROVIDER && "PROVIDER")
+
+        switch ($type) {
+            case "ADMIN":
+                {
+                    return true;
+                }
+                break;
+            case "PROVIDER":
+                const prices = new Prices();
+                prices.price = args.price;
+                prices.provider = request.user.id;
+                prices.save();
+                break;
+
+        }
+        // find by id
+        // edit 
+        // return 
+    },
+    // tslint:disable-next-line:typedef
+    async  saveProfileShop(parent, args, { request, models }, info) {
+        hasPermission(request.user, ["SHOP", "PROVIDER", "ADMIN"]);
+        const User = models.User;
+        let user = await User.findById(request.userId);
+        if (!user) {
+            throw Error("کاربر گرامی اطلاعات شما یافت نشد");
+        }
+        if (args.postal_code) {
+            user.postal_code = args.postal_code;
+        }
+        if (args.shaba) {
+            user.shaba = args.shaba;
+        }
+        if (args.name) {
+            user.shop_name = args.name;
+        }
+        if (args.mali) {
+            user.mali = args.mali;
+        }
+        if (args.sabt) {
+            user.sabt = args.sabt;
+        }
+        if (args.type_estate) {
+            user.type_estate = args.type_estate;
+        }
+        if (args.category) {
+            user.categories = [args.category,...user.categories];
+        }
+        if (args.address) {
+            user.address = args.address;
+        }
+        if (args.province) {
+            user.province= args.province;
+        }
+        if (args.city) {
+            user.city = args.city;
+        }
+        if (args.area) {
+            user.area = args.area;
+        }
+
+        await user.save();
+        console.log(user);
+        return true;
+    },
+};
 export default Mutation;

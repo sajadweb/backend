@@ -2,9 +2,10 @@ type Query {
   me: User
   users: [User]
   categories: [Category]
+  type_estates: [TypeEstate]
   provinces: [Province]
-  cities: [City]
-  areas: [Area]
+  cities(province: ID): [City]
+  areas(city: ID): [Area]
   products: [Product]
   suborders: [SubOrder]
   orders: [Order]
@@ -12,9 +13,9 @@ type Query {
 
 type Mutation {
   saveUser(userId: ID,firstName: String,lastName:String): User
-  signIn(mobile: String!): Boolean!
-  signUp(firstName: String,lastName: String,mobile: String!):Boolean!
-  verify(mobile: String!,code: String!): Verify!
+  userSignIn(mobile: String!): Boolean!
+  userSignUp(firstName: String,lastName: String,mobile: String!):Boolean!
+  userVerify(mobile: String!,code: String!): Verify!
   editProvince(id: ID!,name: String!): Province!
   newProvince(name: String!): Province!
   editCity(id: ID,name: String, Province: ID!): City!
@@ -28,9 +29,10 @@ type Mutation {
   newOrder(shop: ID,price_all: String,discount: String): Order
   editOrder(shop: ID,price_all: String,discount: String): Order
   addPriceInProduct(price: String,product: ID): Boolean
-  editProfile(item: String): Boolean
+  saveProfileShop(postal_code: String,  shaba: String, name: String, mali: String , sabt: String , type_estate: ID,category: ID ,address: String, province: ID , city: ID , area: ID ): Boolean
 }
 
+ 
 type Verify{
   token: String
   data: User
@@ -43,6 +45,11 @@ type User {
   permission: [String] 
   categories: [Category] 
   
+} 
+
+type TypeEstate { 
+  id: ID!  
+  title: String!
 } 
 
 type Category { 
@@ -80,7 +87,7 @@ type Product {
   name: String
   commission: String
   publish: Boolean
-  photo: String
+  photo: [String]
   description: String
   categories: [Category]
   prices: [Price]

@@ -12,3 +12,13 @@ export function hasPermission(user, permissionsNeeded) {
         throw new Error("کاریر گرامی برای شما دسترسی  به این نمایه تعریف نشده")
     }
 }
+export function checkPermission(user, permissionsNeeded): Boolean {
+
+    const matchedPermissions = user.permission.filter(permissionTheyHave =>
+        permissionsNeeded.includes(permissionTheyHave)
+    );
+    if (matchedPermissions.length) {
+        return true;
+    }
+    return false;
+}
