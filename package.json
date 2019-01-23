@@ -16,6 +16,7 @@
     "graphql-cli": "^3.0.4",
     "graphql-yoga": "^1.17.0",
     "jsonwebtoken": "^8.4.0",
+    "kavenegar": "^1.1.4",
     "mongoose": "^5.4.4",
     "reflect-metadata": "^0.1.13",
     "request-promise": "^4.2.2",
